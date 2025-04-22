@@ -6,12 +6,12 @@ import { CartComponent } from './cart/cart.component';
 import { CartItem } from '../models/cart-item';
 
 @Component({
-  selector: 'card-app',
+  selector: 'cart-app',
   standalone: true,
   imports: [CatalogueComponent, CartComponent],
-  templateUrl: './card-app.component.html'
+  templateUrl: './cart-app.component.html'
 })
-export class CardAppComponent implements OnInit {
+export class CartAppComponent implements OnInit {
 
   products: Product[] = [];
 
