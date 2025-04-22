@@ -23,4 +23,8 @@ export class CartAppComponent implements OnInit {
     this.products = this.productService.findAll();
   }
 
+  onAddCart(product: Product) {
+    this.items = [... this.items, { product: { ...product }, quantity: 1 }];
+  }
+
 }
