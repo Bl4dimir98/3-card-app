@@ -4,11 +4,12 @@ import { Product } from '../models/product';
 import { CatalogueComponent } from "./catalogue/catalogue.component";
 import { CartComponent } from './cart/cart.component';
 import { CartItem } from '../models/cart-item';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @Component({
   selector: 'cart-app',
   standalone: true,
-  imports: [CatalogueComponent, CartComponent],
+  imports: [CatalogueComponent, CartComponent, NavbarComponent],
   templateUrl: './cart-app.component.html'
 })
 export class CartAppComponent implements OnInit {
@@ -25,7 +26,7 @@ export class CartAppComponent implements OnInit {
 
   ngOnInit(): void {
     this.products = this.productService.findAll();
-    this.items = JSON.parse(sessionStorage.getItem('cart')!) || [];
+    this.items = JSON.parse(sessionStorage.getItem('cart') || '[]');
     this.calculateTotal();
   }
 
