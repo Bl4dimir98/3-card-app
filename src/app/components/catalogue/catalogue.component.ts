@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models/product';
 import { ProductCardComponent } from "../product-card/product-card.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'catalogue',
@@ -10,9 +11,13 @@ import { ProductCardComponent } from "../product-card/product-card.component";
 })
 export class CatalogueComponent {
 
-  @Input() products!: Product[];
+  products!: Product[];
 
-  @Output() productEventEmmiter: EventEmitter<Product> = new EventEmitter();
+  productEventEmmiter: EventEmitter<Product> = new EventEmitter();
+
+  constructor(private router: Router) {
+    this.products = this.router.getCurrentNavigation()?.extras.state!['products'];
+  }
 
   onAddCart(product: Product) {
     this.productEventEmmiter.emit(product);
