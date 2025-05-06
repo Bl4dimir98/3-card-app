@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../services/product.service';
 import { CartItem } from '../models/cart-item';
 import { NavbarComponent } from './navbar/navbar.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../services/sharing-data.service';
+import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2';
+import { ItemsState } from '../store/items.reducer';
+import { add, remove, total } from '../store/items.actions';
 
 @Component({
   selector: 'cart-app',
@@ -19,13 +21,17 @@ export class CartAppComponent implements OnInit {
   total: number = 0;
 
   constructor(
+    private store: Store<{ items: ItemsState }>,
     private router: Router,
-    private sharingDataService: SharingDataService,
-    private productService: ProductService) { }
+    private sharingDataService: SharingDataService) {
+    this.store.select('items').subscribe(state => {
+      this.items = state.items;
+      this.total = state.total;
+    });
+  }
 
   ngOnInit(): void {
-    this.items = JSON.parse(sessionStorage.getItem('cart') || '[]');
-    // this.calculateTotal();
+    this.store.dispatch(total());
     this.onDeleteCart();
     this.onAddCart();
   }
@@ -33,9 +39,9 @@ export class CartAppComponent implements OnInit {
   onAddCart(): void {
     this.sharingDataService.productEventEmmiter.subscribe(product => {
 
+      this.store.dispatch(add({ product: product }));
+      this.store.dispatch(total())
 
-
-      // this.calculateTotal();
       this.saveSession();
       this.router.navigate(['/cart'], { state: { items: this.items, total: this.total } })
       Swal.fire({
@@ -60,7 +66,8 @@ export class CartAppComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
 
-          // this.calculateTotal();
+          this.store.dispatch(remove({ id: id }));
+          this.store.dispatch(total());
           this.saveSession();
 
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
