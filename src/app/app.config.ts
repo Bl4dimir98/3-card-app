@@ -5,13 +5,18 @@ import { routes } from './app.routes';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideStore } from '@ngrx/store';
 import { itemsReducer } from './store/items.reducer';
+import { productReducer } from './store/products.reducer';
+import { provideEffects } from '@ngrx/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideStore({
+        items: itemsReducer,
+        products: productReducer
+    }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideStore({ items: itemsReducer })
-
-  ]
+    provideEffects()
+]
 };
